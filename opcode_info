@@ -1,0 +1,246 @@
+#include<iostream>
+#include<string>
+#include<map>
+using namespace std;
+struct blockinfo
+{
+    string adrs,len;
+    float numbr;
+    char occr;
+    blockinfo()
+    {
+        occr='n';
+    }
+};
+struct registorinfo
+{
+    float numbr;
+    char occr;
+    registorinfo()
+    {
+        occr='n';
+    }
+};
+struct labelinfo
+{
+     string adrs;
+     string val;
+     string blk;
+     char occr;
+     labelinfo()
+     {
+         occr='n';
+     }
+};
+struct opcodeinfo
+{
+    string opcd;
+    float type;
+    char occr;
+    opcodeinfo()
+    {
+        occr='n';
+    }
+};
+typedef string mnemonic,label;
+typedef std::map<label,blockinfo>   MapType1;
+typedef std::map<mnemonic,registorinfo>  MapType2;
+typedef std::map<label,labelinfo>   MapType3;
+typedef std::map<mnemonic,opcodeinfo>   MapType4;
+MapType1 BLOCK;
+MapType2 REGISTER;
+MapType3 SYMBOL_TABLE;
+MapType4 OPCODE_TABLE;
+int registornumber(char x)
+{
+    if(x=='A')
+        return 0;
+    else if(x=='X')
+        return 1;
+    else if(x=='L')
+        return 2;
+    else if(x=='B')
+        return 3;
+    else if(x=='S')
+        return 4;
+    else if(x=='T')
+        return 5;
+    else if(x=='F')
+        return 6;
+}
+void table()
+{
+REGISTER["A"].numbr=0;
+REGISTER["A"].occr='y';
+REGISTER["X"].numbr=1;
+REGISTER["X"].occr='y';
+REGISTER["L"].numbr=2;
+REGISTER["L"].occr='y';
+REGISTER["B"].numbr=3;
+REGISTER["B"].occr='y';
+REGISTER["S"].numbr=4;
+REGISTER["S"].occr='y';
+REGISTER["T"].numbr=5;
+REGISTER["T"].occr='y';
+REGISTER["F"].numbr=6;
+REGISTER["F"].occr='y';
+REGISTER["PC"].numbr=8;
+REGISTER["PC"].occr='y';
+REGISTER["SW"].numbr=9;
+REGISTER["SW"].occr='y';
+OPCODE_TABLE["LDA"].opcd="00";
+OPCODE_TABLE["LDA"].type=3;
+OPCODE_TABLE["LDA"].occr='y';
+OPCODE_TABLE["LDX"].opcd="04";
+OPCODE_TABLE["LDX"].type=3;
+OPCODE_TABLE["LDX"].occr='y';
+OPCODE_TABLE["LDL"].opcd="08";
+OPCODE_TABLE["LDL"].type=3;
+OPCODE_TABLE["LDL"].occr='y';
+OPCODE_TABLE["STA"].opcd="0C";
+OPCODE_TABLE["STA"].type=3;
+OPCODE_TABLE["STA"].occr='y';
+OPCODE_TABLE["STX"].opcd="10";
+OPCODE_TABLE["STX"].type=3;
+OPCODE_TABLE["STX"].occr='y';
+OPCODE_TABLE["STL"].opcd="14";
+OPCODE_TABLE["STL"].type=3;
+OPCODE_TABLE["STL"].occr='y';
+OPCODE_TABLE["ADD"].opcd="18";
+OPCODE_TABLE["ADD"].type=3;
+OPCODE_TABLE["ADD"].occr='y';
+OPCODE_TABLE["SUB"].opcd="1C";
+OPCODE_TABLE["SUB"].type=3;
+OPCODE_TABLE["SUB"].occr='y';
+OPCODE_TABLE["MUL"].opcd="20";
+OPCODE_TABLE["MUL"].type=3;
+OPCODE_TABLE["MUL"].occr='y';
+OPCODE_TABLE["DIV"].opcd="24";
+OPCODE_TABLE["DIV"].type=3;
+OPCODE_TABLE["DIV"].occr='y';
+OPCODE_TABLE["COMP"].opcd="28";
+OPCODE_TABLE["COMP"].type=3;
+OPCODE_TABLE["COMP"].occr='y';
+OPCODE_TABLE["JEQ"].opcd="30";
+OPCODE_TABLE["JEQ"].type=3;
+OPCODE_TABLE["JEQ"].occr='y';
+OPCODE_TABLE["JGT"].opcd="34";
+OPCODE_TABLE["JGT"].type=3;
+OPCODE_TABLE["JGT"].occr='y';
+OPCODE_TABLE["JLT"].opcd="38";
+OPCODE_TABLE["JLT"].type=3;
+OPCODE_TABLE["JLT"].occr='y';
+OPCODE_TABLE["AND"].opcd="40";
+OPCODE_TABLE["AND"].type=3;
+OPCODE_TABLE["AND"].occr='y';
+OPCODE_TABLE["OR"].opcd="44";
+OPCODE_TABLE["OR"].type=3;
+OPCODE_TABLE["OR"].occr='y';
+OPCODE_TABLE["JSUB"].opcd="48";
+OPCODE_TABLE["JSUB"].type=3;
+OPCODE_TABLE["JSUB"].occr='y';
+OPCODE_TABLE["LDCH"].opcd="50";
+OPCODE_TABLE["LDCH"].type=3;
+OPCODE_TABLE["LDCH"].occr='y';
+OPCODE_TABLE["LDB"].opcd="68";
+OPCODE_TABLE["LDB"].type=3;
+OPCODE_TABLE["LDB"].occr='y';
+OPCODE_TABLE["LDS"].opcd="6C";
+OPCODE_TABLE["LDS"].type=3;
+OPCODE_TABLE["LDS"].occr='y';
+OPCODE_TABLE["LDT"].opcd="74";
+OPCODE_TABLE["LDT"].type=3;
+OPCODE_TABLE["LDT"].occr='y';
+OPCODE_TABLE["ADDR"].opcd="90";
+OPCODE_TABLE["ADDR"].type=2;
+OPCODE_TABLE["ADDR"].occr='y';
+OPCODE_TABLE["DIVR"].opcd="9C";
+OPCODE_TABLE["DIVR"].type=2;
+OPCODE_TABLE["DIVR"].occr='y';
+OPCODE_TABLE["MULR"].opcd="98";
+OPCODE_TABLE["MULR"].type=2;
+OPCODE_TABLE["MULR"].occr='y';
+OPCODE_TABLE["COMPR"].opcd="A0";
+OPCODE_TABLE["COMPR"].type=2;
+OPCODE_TABLE["COMPR"].occr='y';
+OPCODE_TABLE["SHIFTL"].opcd="A4";
+OPCODE_TABLE["SHIFTL"].type=2;
+OPCODE_TABLE["SHIFTL"].occr='y';
+OPCODE_TABLE["RMO"].opcd="AC";
+OPCODE_TABLE["RMO"].type=2;
+OPCODE_TABLE["RMO"].occr='y';
+OPCODE_TABLE["CLEAR"].opcd="B4";
+OPCODE_TABLE["CLEAR"].type=2;
+OPCODE_TABLE["CLEAR"].occr='y';
+OPCODE_TABLE["FLOAT"].opcd="C0";
+OPCODE_TABLE["FLOAT"].type=1;
+OPCODE_TABLE["FLOAT"].occr='y';
+OPCODE_TABLE["FIX"].opcd="C4";
+OPCODE_TABLE["FIX"].type=1;
+OPCODE_TABLE["FIX"].occr='y';
+OPCODE_TABLE["NORM"].opcd="C8";
+OPCODE_TABLE["NORM"].type=1;
+OPCODE_TABLE["NORM"].occr='y';
+OPCODE_TABLE["RD"].opcd="D8";
+OPCODE_TABLE["RD"].type=3;
+OPCODE_TABLE["RD"].occr='y';
+
+OPCODE_TABLE["RSUB"].opcd="4C";
+OPCODE_TABLE["RSUB"].type=3;
+OPCODE_TABLE["RSUB"].occr='y';
+
+
+
+OPCODE_TABLE["STCH"].opcd="54";
+OPCODE_TABLE["STCH"].type=3;
+OPCODE_TABLE["STCH"].occr='y';
+OPCODE_TABLE["STB"].opcd="78";
+OPCODE_TABLE["STB"].type=3;
+OPCODE_TABLE["STB"].occr='y';
+OPCODE_TABLE["STS"].opcd="7C";
+OPCODE_TABLE["STS"].type=3;
+OPCODE_TABLE["STS"].occr='y';
+OPCODE_TABLE["STF"].opcd="80";
+OPCODE_TABLE["STF"].type=3;
+OPCODE_TABLE["STF"].occr='y';
+OPCODE_TABLE["STT"].opcd="84";
+OPCODE_TABLE["STT"].type=3;
+OPCODE_TABLE["STT"].occr='y';
+OPCODE_TABLE["SUBR"].opcd="94";
+OPCODE_TABLE["SUBR"].type=2;
+OPCODE_TABLE["SUBR"].occr='y';
+
+OPCODE_TABLE["SHIFTR"].opcd="A8";
+OPCODE_TABLE["SHIFTR"].type=2;
+OPCODE_TABLE["SHIFTR"].occr='y';
+OPCODE_TABLE["TIXR"].opcd="B8";
+OPCODE_TABLE["TIXR"].type=2;
+OPCODE_TABLE["TIXR"].occr='y';
+OPCODE_TABLE["STI"].opcd="D4";
+OPCODE_TABLE["STI"].type=3;
+OPCODE_TABLE["STI"].occr='y';
+OPCODE_TABLE["WD"].opcd="DC";
+OPCODE_TABLE["WD"].type=3;
+OPCODE_TABLE["WD"].occr='y';
+OPCODE_TABLE["TD"].opcd="E0";
+OPCODE_TABLE["TD"].type=3;
+OPCODE_TABLE["TD"].occr='y';
+OPCODE_TABLE["STSW"].opcd="E8";
+OPCODE_TABLE["STSW"].type=3;
+OPCODE_TABLE["STSW"].occr='y';
+OPCODE_TABLE["SSK"].opcd="EC";
+OPCODE_TABLE["SSK"].type=3;
+OPCODE_TABLE["SSK"].occr='y';
+OPCODE_TABLE["SIO"].opcd="F0";
+OPCODE_TABLE["SIO"].type=1;
+OPCODE_TABLE["SIO"].occr='y';
+}
+string block_search(int numbr)
+{
+     for (MapType1::const_iterator i = BLOCK.begin();;++i)
+         if(i->second.numbr==numbr)
+            {
+                return i->first;
+            }
+}
+

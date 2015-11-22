@@ -1,0 +1,100 @@
+#include<iostream>
+#include<cstdio>
+#include<fstream>
+#include<cstdlib>
+#include<map>
+#include<cstring>
+int main()
+{
+
+  char a[40],ad[40],label[40],object_code[40],operand[40],sym [40],ch,fnm[10],ab[50];
+  int st,diff,i,adrs1,adrs2,add,len,alen,f_adrs,lastadrs,j=0;
+  char mnemonic[50][50]={"LDA","STA","LDCH","STCH","ADD","SUB","MUL","DIV"};
+  int locctr=0x0,start,l,c=0x0,k=0,bol=0;
+  char code[15][15]={"00","0C","50","54","28","29","3A","3B"};
+  FILE *fp1,*fp2,*fp3,*fp4;
+ ifstream fin;
+ ofstream fout;
+ fin.open("intermediate.txt");
+ fin.open("palindrome.txt");
+ cout<<"\n Program:\n";
+ ch=fgetc(fp3);
+    while(ch!=EOF)
+    {
+   cout<<ch;
+   ch=fgetc(fp3);
+    } 
+    rewind(fp3);
+cout<<"\n PASS 1:";
+fin.open("SYMBOL_TABLE.txt","w");
+  fout<<label;
+  fout<<object_code;
+  fout<<operand;
+  fout<<&adrs1;
+    if(strcmp(operand,"START")==0)
+    {
+            start=adrs1;
+            locctr=start;
+            lastadrs=locctr;
+            c=adrs1;
+        fout<<(fp1,"%s\t%s\t%X\n",object_code,operand,adrs1);
+    }
+else
+        locctr=0x0;
+fout<<(fp3,"%s%s%s",label,object_code,operand);
+while(strcmp(object_code,"END")!=0)
+  {
+      if(strcmp(label,"**")!=0)
+        fout<<(fp2,"%s\t%X\n",label,locctr);
+
+        if(strcmp(object_code,"BYTE")==0)
+            {
+                fout<<(fp1,"%X\t%s\t%s\t%s\t\n",adrs1,label,object_code,operand);
+                len=strlen(operand);
+                adrs1+=len-3;
+                locctr+=len-3;
+            }
+            else if(strcmp(object_code,"RESB")==0)
+           {
+                fout<<(fp1,"%X\t%s\t%s\t%s\n",adrs1,label,object_code,operand);
+                adrs1+=(atoi(operand));
+                locctr+=(atoi(operand));
+           }
+    else if (strcmp(object_code,"RESW")==0)
+    {
+        fout<<(fp1,"%X\t%s\t%s\t%s\n",adrs1,label,object_code,operand);
+        adrs1+=(3*(atoi(operand)));
+         locctr+=(3*(atoi(operand)));
+    }
+   else
+   {
+      fout<<(fp1,"%X\t%s\t%s\t%s\n",adrs1,label,object_code,operand);
+       adrs1+=3;
+       locctr+=3;
+   }
+   fout<<(fp3,"%s%s%s",label,object_code,operand);
+  }
+  fout<<(fp1,"%X\t%s\t%s\t%s\n",adrs1,label,object_code,operand);
+  l=adrs1;
+  fclose(fp1);
+  fclose(fp2);
+  fclose(fp3);
+  cout<<"\n\n File After Addressing \n\n\t";
+  fp1=fin.open("intermediate.txt","r");
+  ch=fgetc(fp1);
+  while(ch!=EOF)
+  {
+   cout<<ch;
+   ch=fgetc(fp1);
+  }
+  fclose(fp1);
+  cout<<"\n\n Prgram Length:",l-c;
+  cout<<"\n SYMBOL TABLE:\n\n";
+  fp2=fin.open("SYMBOL_TABLE.txt","r");
+  ch=fgetc(fp2);
+  while(ch!=EOF)
+  {
+   cout<<ch;
+   ch=fgetc(fp2);
+  }
+fclose(fp2);

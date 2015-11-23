@@ -1,0 +1,236 @@
+#include<iostream>
+#include<string>
+#include<map>
+using namespace std;
+#include "opcode_info.cpp"
+#include "HEXA_DEC.cpp"
+bool blank(char x)
+{
+    if(x==' ')
+        return true;
+    if(x=='\t')
+    return true;
+    return false;
+}
+
+void chng(string x,string word[],int& c)
+{
+    int i;
+    for(i=0;i<5;++i) word[i]="";
+    c=0;
+    i=0;
+    while(blank(x[i])&&i<x.length())
+        {++i;continue;}
+    if(i==x.length()||x[i]=='.')
+        return;
+    for(;i<x.length();)
+    {
+        while(blank(x[i])&&i<x.length())
+            {++i;continue;}
+        if(i==x.length())
+            break;
+        for(;!blank(x[i])&&i<x.length();++i) word[c]+=x[i];
+        ++c;
+    }
+}
+
+void exe(string[],int);
+int bn,ln;
+hexa pc;
+string cb;
+bool ef=0;
+ifstream fin_p1;
+ofstream fout_p1,error;
+
+void debug()
+{
+    table();
+    char ch;
+    string str1,str2[10];
+    int c=0;
+    fin_p1.open("f.txt");
+    fout_p1.open("intr.txt");
+    error.open("error.txt");
+    ln=10;
+    getline(fin_p1,str1);
+    chng(str1,str2,c);
+    while(c==0)
+    {
+        fout_p1<<ln<<endl;
+        fout_p1<<"$";
+        fout_p1<<str1<<endl;
+        fout_p1<<""<<endl;
+        fout_p1<<""<<endl;
+        ln=ln+10;
+        cout<<"string: "<<str1<<endl;
+    }
+    pc="0";
+    BLOCK["DEFAULT"].numbr=0;
+    BLOCK["DEFAULT"].adrs=pc;
+    BLOCK["DEFAULT"].len="0";
+    cb="DEFAULT";
+    bn=1;
+    ln=10;
+    if(str2[0]=="START")
+    {
+        pc=str2[1];
+        fout_p1<<ln<<endl;
+        fout_p1<<""<<endl;
+        fout_p1<<"START"<<endl;
+        fout_p1<<pc<<endl;
+        fout_p1<<pc<<endl;
+        fout_p1<<""<<endl;
+        cout<<"Start=0"<<endl;
+    }
+    else if(str2[1]=="START")
+    {
+        pc=str2[2];
+        fout_p1<<ln<<endl;
+        fout_p1<<str2[0]<<endl;
+        fout_p1<<"START"<<endl;
+        fout_p1<<pc<<endl;
+        fout_p1<<pc<<endl;
+        fout_p1<<""<<endl;
+        cout<<"Start=1"<<endl;
+    }
+    else
+        exe(str2,c);
+    while(true)
+    {
+        getline(fin_p1,str1);
+        chng(str1,str2,c);
+        ln=ln+10;
+        cout<<"s: "<<str1<<endl;
+        fout_p1<<ln<<endl;
+        if(c==0)
+        {
+            cout<<"Comment"<<endl;
+            fout_p1<<"$"<<endl;
+            fout_p1<<str1<<endl;
+            fout_p1<<""<<endl;
+            fout_p1<<""<<endl;
+            fout_p1<<""<<endl;
+            continue;
+        }
+        if(str2[0]=="END")
+        {
+            BLOCK[cb].len=pc;
+            fout_p1<<""<<endl;
+            fout_p1<<str2[0]<<endl;
+            fout_p1<<str2[1]<<endl;
+            fout_p1<<pc<<endl;
+            fout_p1<<""<<endl;
+            break;
+        }
+        exe(str2,c);
+       // cin>>ch;
+     }
+     hexa addr,len;
+     string temp=block_search(0);
+     addr=BLOCK[temp].adrs;
+     len=BLOCK[temp].len;
+     for(int i=1;i<bn;++i)
+     {
+            temp=block_search(i);
+            BLOCK[temp].adrs=toHex(toDec(addr)+toDec(len));
+            addr=BLOCK[temp].adrs;
+            len=BLOCK[temp].len;
+
+     }
+}
+
+void exe(string str2[],int c)
+{
+    cout<<"word[0]: "<<str2[0]<<" pc: "<<pc<<endl;
+    if(str2[0]=="USE")
+    {
+        cout<<"USE detected!"<<endl;
+        BLOCK[cb].len=pc;
+        if(str2[1]=="")
+        {
+            cb="DEFAULT";
+            pc=BLOCK["DEFAULT"].len;
+        }
+        else if(BLOCK[str2[1]].occr=='y')
+        {
+            cb=str2[1];
+            pc=BLOCK[str2[1]].len;
+        }
+        else
+        {
+            BLOCK[str2[1]].numbr=bn;
+            BLOCK[str2[1]].occr='y';
+            BLOCK[str2[1]].len="0";
+            cb=str2[1];
+            pc="0";
+            ++bn;
+        }
+        fout_p1<<""<<endl;
+        fout_p1<<str2[0]<<endl;
+        fout_p1<<str2[1]<<endl;
+        fout_p1<<pc<<endl;
+        fout_p1<<""<<endl;
+        return;
+    }
+    if(str2[0][0]=='+')
+    {
+        cout<<"type 4"<<endl;
+        fout_p1<<""<<endl;
+        fout_p1<<str2[0]<<endl;
+        fout_p1<<str2[1]<<endl;
+        fout_p1<<pc<<endl;
+        pc=toHex(toDec(pc)+4);
+        fout_p1<<pc<<endl;
+        return;
+    }
+    if(OPCODE_TABLE[str2[0]].occr=='y')
+    {
+        cout<<"Opcode = 0"<<endl;
+        fout_p1<<""<<endl;
+        fout_p1<<str2[0]<<endl;
+        fout_p1<<str2[1]<<endl;
+        fout_p1<<pc<<endl;
+        pc=toHex(toDec(pc)+OPCODE_TABLE[str2[0]].type);
+        fout_p1<<pc<<endl;
+        return;
+    }
+    if(OPCODE_TABLE[str2[0]].occr=='n')
+    {
+        if(SYMBOL_TABLE[str2[0]].occr=='y')
+        {
+            error<<""<<ln<<":Symbol Repeated"<<endl;
+            ef=1;
+        }
+        else
+        {
+            SYMBOL_TABLE[str2[0]].adrs=pc;
+            SYMBOL_TABLE[str2[0]].blk=cb;
+            SYMBOL_TABLE[str2[0]].occr='y';
+            fout_p1<<str2[0]<<endl;
+            fout_p1<<str2[1]<<endl;
+            fout_p1<<str2[2]<<endl;
+            fout_p1<<pc<<endl;
+            if(str2[1][0]=='+')
+                pc=toHex(toDec(pc)+4);
+            else if(OPCODE_TABLE[str2[1]].occr=='y')
+                pc=toHex(toDec(pc)+OPCODE_TABLE[str2[1]].type);
+            else if(str2[1]=="WORD")      pc=toHex(toDec(pc)+3);
+            else if(str2[1]=="RESW")      pc=toHex(toDec(pc)+(atoi(str2[2].c_str())*3));
+            else if(str2[1]=="RESB")      pc=toHex(toDec(pc)+atoi(str2[2].c_str()));
+            else if(str2[1]=="BYTE")
+            {
+                 int len=str2[1].length()-3;
+                 if(str2[1][0]=='X') len/=2;
+                 pc=toHex(toDec(pc)+len);
+            }
+            else
+            {
+                error<<""<<ln<<":Object_Code not found"<<endl;
+                ef=1;
+            }
+            fout_p1<<pc<<endl;
+        }
+    }
+}
+
+

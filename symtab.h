@@ -2,75 +2,66 @@
 #include <cstdlib>
 #include <cstring>
 #include <string>
-
-
  using namespace std;
-
-
 int size=0;
-void DisplaySym();
-void InsertSym();
+void disp();
+void insrt();
 
 struct stab
 {
-    string label;
-    int addr;
+    string lbl;
+    int adr;
     struct stab *next;
 };
 
-struct stab *last, *first;
+struct stab *l, *f;
 
-
-void InsertSym(string l,  int LOCCTR)
+void insrt(string l,  int LOCCTR)
 {
     struct stab *p;
     p = new stab;
-    p->label = l;
-    p->addr = LOCCTR;
+    p->lbl = l;
+    p->adr = LOCCTR;
     p->next=NULL;
     if(size==0)
     {
-      first=p;
-      last=p;
+      f=p;
+      l=p;
     }
     else
     {
-      last->next=p;
-      last=p;
+      l->next=p;
+      l=p;
     }
     size++;
 }
-
-
-
-bool SearchSym(string lab)
+bool findsym(string lab)
 {
  int i,flag=0;
  struct stab *p;
- p=first;
+ p=f;
   for(i=0;i<size;i++)
    {
-    if(p->label == lab)
+    if(p->lbl == lab)
      flag=1;
     p=p->next;
    }
  return flag;
 }
 
-int getTargetAddr(string lab)
+int gettargetadrs(string lab)
 {
   int i,flag=0;
   struct stab *p;
-  p=first;
+  p=f;
   for(i=0;i<size;i++)
   {
-    if(p->label == lab)
+    if(p->lbl == lab)
     {
       flag=1;
-      return p->addr;
+      return p->adr;
     }
     p=p->next;
   }
   return flag;
 }
-

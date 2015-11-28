@@ -7,14 +7,14 @@
 
 using namespace std;
 
-class hashing
+class c1
 {
 public:
-	string opcodeTable[49][3];
-	string opCode[49][3];
+	string opcodeTable[49][3];	//Array of strings storing MNEMONICS
+	string opCode[49][3];		//Array of strings storing corresponding OPCODES
 public:
 
-	hashing()
+	c1()
     {
 		for(int i=0; i<49; i++)
             for(int j=0; j<3; j++)
@@ -25,65 +25,65 @@ public:
 	}
 	int hash(string word)
 	{
-		int index=0;
+		int in=0;
         int k = 1;
 		for(int i=0; i<word.length(); i++)
 		{
-			index += k * word[i];
+			in += k * word[i];
 		    k += 1;
         }
-		index = index%49;
-		return index;
+		in = in%49;
+		return in;
 	}
 
-	void insert(string word)
+	void insrt(string word)
 	{
-		int index;
-		index = hash(word);
+		int in;
+		in = hash(word);
 		int i=0;
 		for(i=0; i<3; i++)
 		{
-			if(!(opcodeTable[index][i].compare("0")))
+			if(!(opcodeTable[in][i].compare("0")))
 			{
-				opcodeTable[index][i] = word;
+				opcodeTable[in][i] = word;
 		        break;
 			}
 		}
 	}
 
-	void insertOpcode(string word, string mnemo)
+	void insrtop(string word, string mnemo)
 	{
-		int index;
-		index = hash(mnemo);
+		int in;
+		in = hash(mnemo);
 		int i=0;
 		for(i=0; i<3; i++)
 		{
-			if(!(opCode[index][i].compare("0")))
+			if(!(opCode[in][i].compare("0")))
 			{
-				opCode[index][i] = word;
+				opCode[in][i] = word;
 		        break;
 			}
 		}
 	}
 
-	string getOpCode(string mnemo)
+	string getop(string mnemo)
 	{
-		int index;
-		index = hash(mnemo);
+		int in;
+		in = hash(mnemo);
 		for(int i=0; i<3; i++)
     	{
-    		if(opcodeTable[index][i].compare(mnemo) == 0)
-    			return opCode[index][i];
+    		if(opcodeTable[in][i].compare(mnemo) == 0)
+    			return opCode[in][i];
 		}
 		return 0;
 	}
 	int found(string word)
 	{
-		int index,foundFlag=0;
-		index = hash(word);
+		int in,foundFlag=0;
+		in = hash(word);
 		for(int i=0; i<3; i++)
     	{
-    		if(opcodeTable[index][i].compare(word) == 0)
+    		if(opcodeTable[in][i].compare(word) == 0)
     			return 1;
 		}
 		return 0;
